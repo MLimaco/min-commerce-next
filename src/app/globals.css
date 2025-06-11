@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
 :root {
+  /* Clean, minimalist color palette */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a202c; /* dark gray for text */
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-primary-hover: #2563eb; /* blue-600 */
+  --color-text: #1a202c; /* gray-900 */
+  --color-text-light: #4a5568; /* gray-700 */
+  --color-background: #ffffff;
+  --color-white: #ffffff;
+  --color-accent: #f56565; /* red-500 */
+  
+  /* Subtle animation variables */
+  --transition-fast: 200ms;
+  --transition-medium: 300ms;
 }
 
 @theme inline {
@@ -12,15 +24,102 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Explicitly disable dark mode for now */
+/* We'll enable it later with proper styling */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff; /* Force light mode */
+    --foreground: #1a202c;
+    --color-primary: #3b82f6;
+    --color-primary-hover: #2563eb;
+    --color-text: #1a202c;
+    --color-text-light: #4a5568;
+    --color-background: #ffffff;
+    --color-accent: #f56565;
   }
 }
 
+/* Apply base styles */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  @apply antialiased;
+}
+
+/* Container width and responsiveness */
+.container {
+  @apply w-full max-w-6xl mx-auto px-4 sm:px-6;
+}
+
+/* Simplified, subtle animations */
+.hover-lift {
+  @apply transition-transform duration-200 ease-in-out;
+}
+
+.hover-lift:hover {
+  @apply transform -translate-y-0.5;
+}
+
+.image-zoom {
+  @apply transition-transform duration-300 ease-in-out;
+}
+
+.image-zoom:hover {
+  @apply scale-[1.03];
+}
+
+/* Minimalist card styles */
+.card {
+  @apply bg-white border border-gray-100 rounded-md shadow-sm hover:shadow 
+         transition-shadow duration-200 overflow-hidden flex flex-col h-full;
+}
+
+/* Clean button styles */
+.btn-primary {
+  background-color: var(--color-primary);
+  @apply text-white py-2 px-4 rounded-md transition-colors duration-200 font-medium;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-outline {
+  @apply border py-2 px-4 rounded-md transition-colors duration-200 font-medium;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* Badge styles */
+.badge {
+  @apply text-xs rounded-full px-2.5 py-0.5 font-medium;
+  background-color: #f3f4f6; /* gray-100 */
+  color: var(--color-text-light);
+}
+
+.badge-accent {
+  @apply text-xs rounded-full px-2 py-0.5 font-medium;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-medium tracking-tight;
+  color: var(--foreground);
+}
+
+/* Removing default styling */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
