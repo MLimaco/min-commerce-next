@@ -1,4 +1,4 @@
-import { type Product } from "@/models/product";
+import { type Product } from "@/services/productService";
 
 export type CartItem = Product & {
     quantity: number;

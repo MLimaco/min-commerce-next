@@ -1,8 +1,9 @@
 'use client';
 import React, { createContext, useState } from 'react';
+import { Product } from '@/services/productService';
 
 // Definimos la estructura básica de un elemento del carrito
-type CartItem = {
+type CartItem = Product &{
   id: string;
   title: string;
   price: number;
