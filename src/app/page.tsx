@@ -1,20 +1,32 @@
-import ProductCard from '@/components/ProductCard';
-import Titulo from '@/components/Titulo';
-import { products } from '@/models/product';
+import SimpleBanner from '@/components/SimpleBanner'; // Usar el nuevo componente
+import prisma from '@/lib/prisma';
+import ProductList from '@/components/ProductList';
 
-export default function HomePage() {
-  console.log('estoy en el servidor');
-  return (
-    <div className="container py-8">
-      <Titulo />
-      <h2 className="text-xl mb-6">Productos</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {products.map(product => (
-          <div key={product.id}>
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+export default async function HomePage() {
+  try {
+    // Consulta directa a la base de datos (Server Component)
+    const products = await prisma.product.findMany();
+
+    return (
+      <>
+        <SimpleBanner />
+        <main className="container mx-auto py-8 px-4">
+          <h1 className="text-3xl font-medium mb-6">Nuestros Productos</h1>
+          {products.length === 0 ? (
+            <p>No hay productos disponibles.</p>
+          ) : (
+            <ProductList products={products} />
+          )}
+        </main>
+      </>
+    );
+  } catch (error) {
+    console.error('Error cargando productos:', error);
+    return (
+      <main className="container mx-auto py-8 px-4">
+        <h1 className="text-3xl font-medium mb-6">Nuestros Productos</h1>
+        <p className="text-red-500">Error al cargar productos. Por favor, intenta nuevamente.</p>
+      </main>
+    );
+  }
 }

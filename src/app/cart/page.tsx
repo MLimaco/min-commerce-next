@@ -1,10 +1,25 @@
 'use client';
 import { useContext } from 'react';
 import { CartContext } from '@/context/cartContext';
+import Link from 'next/link';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
 
+  // Si el carrito está vacío, mostramos un mensaje
+  if (cart.length === 0) {
+    return (
+      <div className="container py-8">
+        <h1 className="text-2xl font-medium mb-6">Tu Carrito</h1>
+        <p>Tu carrito está vacío.</p>
+        <Link href="/" className="btn-primary inline-block mt-4">
+          Ir a comprar
+        </Link>
+      </div>
+    );
+  }
+
+    // Calculamos el total del carrito
     return <main className="p-12">
         <article className="p-24">
             <h2 className="text-xl mb-6">Tu Carrito</h2>
