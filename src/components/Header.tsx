@@ -220,7 +220,7 @@ export default function Header() {
                     
                     {/* Carrito */}
                     <Link 
-                        href="/carrito"
+                        href="/cart"
                         className="relative group"
                         aria-label={`Carrito con ${cartItemCount} productos`}
                     >
