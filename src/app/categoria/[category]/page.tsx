@@ -4,15 +4,15 @@ import prisma from '@/lib/prisma';
 import ProductList from '@/components/ProductList';
 import CategoryFilters from '@/components/CategoryFilters';
 
-export default async function CategoryPage({ 
-  params, 
-  searchParams 
-}: { 
+export default async function CategoryPage({
+  params,
+  searchParams
+}: {
   params: { category: string },
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const category = params.category;
-  
+
   // Obtener todos los productos de esta categoría - modificado para usar campos existentes
   const allCategoryProducts = await prisma.product.findMany({
     where: {
@@ -29,7 +29,7 @@ export default async function CategoryPage({
       deliveryTime: true,  // Podemos usar este para filtro de envío
     }
   });
-  
+
   // Construir los filtros dinámicamente a partir de los datos existentes
   const filterCounts = {
     estado: new Map<string, number>(),
@@ -37,7 +37,7 @@ export default async function CategoryPage({
     marca: new Map<string, number>(),
     vendedor: new Map<string, number>(),
   };
-  
+
   // Contamos los productos para cada posible valor de filtro
   allCategoryProducts.forEach(product => {
     // Usar onSale como sustituto para "estado" del producto
@@ -47,27 +47,30 @@ export default async function CategoryPage({
       const currentCount = filterCounts.estado.get(estado) || 0;
       filterCounts.estado.set(estado, currentCount + 1);
     }
-    
+
     // Usar deliveryTime para filtro de envío
     // Si el tiempo de entrega es menor a 2 días, lo consideramos envío rápido
-    if (product.deliveryTime !== undefined && product.deliveryTime <= 2) {
+    if (product.deliveryTime !== undefined &&
+      (typeof product.deliveryTime === 'number'
+        ? product.deliveryTime <= 2
+        : parseInt(product.deliveryTime) <= 2)) {
       const currentCount = filterCounts.envio.get('rapido') || 0;
       filterCounts.envio.set('rapido', currentCount + 1);
     }
-    
+
     // Conteo de marcas
     if (product.brand) {
       const currentCount = filterCounts.marca.get(product.brand) || 0;
       filterCounts.marca.set(product.brand, currentCount + 1);
     }
-    
+
     // Conteo de vendedores
     if (product.seller) {
       const currentCount = filterCounts.vendedor.get(product.seller) || 0;
       filterCounts.vendedor.set(product.seller, currentCount + 1);
     }
   });
-  
+
   // Convertir los conteos a arrays para el componente de filtros
   const filterData = {
     estado: Array.from(filterCounts.estado, ([value, count]) => ({
@@ -75,7 +78,7 @@ export default async function CategoryPage({
       value,
       count
     })),
-    
+
     envio: filterCounts.envio.has('rapido') ? [
       {
         name: 'Envío rápido (1-2 días)',
@@ -83,26 +86,26 @@ export default async function CategoryPage({
         count: filterCounts.envio.get('rapido') || 0
       }
     ] : [],
-    
+
     marca: Array.from(filterCounts.marca, ([value, count]) => ({
       name: value,
       value,
       count
     })),
-    
+
     vendedor: Array.from(filterCounts.vendedor, ([value, count]) => ({
-      name: value === 'local' ? 'Tienda Local' : 
-           value === 'premium' ? 'Vendedor Premium' : value,
+      name: value === 'local' ? 'Tienda Local' :
+        value === 'premium' ? 'Vendedor Premium' : value,
       value,
       count
     }))
   };
-  
+
   // Construir filtros de consulta basados en searchParams, adaptados a tu esquema
   const queryFilters: Record<string, unknown> = {
     category: category.toLowerCase(),
   };
-  
+
   // Aplicar filtro de estado (usando onSale)
   if (searchParams.estado) {
     const estados = Array.isArray(searchParams.estado) ? searchParams.estado : [searchParams.estado];
@@ -112,7 +115,7 @@ export default async function CategoryPage({
       queryFilters.onSale = false;
     }
   }
-  
+
   // Aplicar filtro de envío (usando deliveryTime)
   if (searchParams.envio) {
     const envios = Array.isArray(searchParams.envio) ? searchParams.envio : [searchParams.envio];
@@ -122,7 +125,7 @@ export default async function CategoryPage({
       };
     }
   }
-  
+
   // Aplicar filtro de marca
   if (searchParams.marca) {
     const marcas = Array.isArray(searchParams.marca) ? searchParams.marca : [searchParams.marca];
@@ -132,7 +135,7 @@ export default async function CategoryPage({
       };
     }
   }
-  
+
   // Aplicar filtro de vendedor
   if (searchParams.vendedor) {
     const vendedores = Array.isArray(searchParams.vendedor) ? searchParams.vendedor : [searchParams.vendedor];
@@ -142,7 +145,7 @@ export default async function CategoryPage({
       };
     }
   }
-  
+
   // Consultar productos con filtros
   const filteredProducts = await prisma.product.findMany({
     where: queryFilters,
@@ -150,7 +153,7 @@ export default async function CategoryPage({
       createdAt: 'desc'
     }
   });
-  
+
   // Si no hay productos en esta categoría (sin filtros), mostrar 404
   if (allCategoryProducts.length === 0) {
     notFound();
@@ -166,7 +169,7 @@ export default async function CategoryPage({
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </div>
-      
+
       <div className="mb-4">
         <h1 className="text-2xl font-medium text-gray-900">
           {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -176,16 +179,16 @@ export default async function CategoryPage({
           {Object.keys(searchParams).length > 0 && ' con los filtros aplicados'}
         </p>
       </div>
-      
+
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar con filtros */}
         <div className="w-full md:w-64 flex-shrink-0">
-          <CategoryFilters 
+          <CategoryFilters
             filterData={filterData}
             categorySlug={category}
           />
         </div>
-        
+
         {/* Productos */}
         <div className="flex-1">
           {filteredProducts.length > 0 ? (

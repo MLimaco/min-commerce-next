@@ -17,7 +17,7 @@ export default function ProductCard({ product }: Props) {
     // Evitamos que el clic se propague al Link padre
     e.stopPropagation();
     e.preventDefault();
-    
+
     // Creamos el item del carrito con solo los campos necesarios
     const cartItem = {
       id: product.id,
@@ -26,9 +26,16 @@ export default function ProductCard({ product }: Props) {
       imageUrl: product.imageUrl,
       category: product.category,
       onSale: product.onSale,
-      quantity: 1
+      quantity: 1,
+      // Añadir valores predeterminados
+      description: product.description || '',
+      ranking: product.ranking || 0,
+      deliveryTime: product.deliveryTime || '',
+      brand: product.brand || '',
+      seller: product.seller || ''
     };
-    
+
+
     console.log(`Producto agregado al carrito: ${product.id}`);
     // Usamos la función del contexto
     addToCart(cartItem);
@@ -56,8 +63,8 @@ export default function ProductCard({ product }: Props) {
           <p className="text-emerald-600 font-bold text-lg mt-auto">${product.price.toFixed(2)}</p>
 
           {/* El botón debe evitar la navegación y solo añadir al carrito */}
-          <button 
-            onClick={handleAddToCart} 
+          <button
+            onClick={handleAddToCart}
             className="btn-primary mt-2 cursor-pointer"
           >
             Agregar al carrito

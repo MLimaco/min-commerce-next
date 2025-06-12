@@ -137,7 +137,7 @@ export default function CategoryFilters({
       });
     });
     
-    router.push(`/categoria/${categorySlug}?${params.toString()}`);
+router.push(`/categoria/${encodeURIComponent(categorySlug)}?${params.toString()}`);
   };
 
   // Limpiar todos los filtros

@@ -9,24 +9,37 @@ import { formatDeliveryTime } from '@/lib/utils';
 import Link from 'next/link';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+
   const product = await prisma.product.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
+  if (!product) {
+    return {
+      title: 'Producto no encontrado',
+    };
+  }
+
   return {
-    title: product ? `${product.title} | Min-Commerce` : 'Producto no encontrado',
-    description: product?.description || 'Detalles del producto',
+    title: product.title,
+    description: product.description || 'Detalles del producto',
   };
 }
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  
   const product = await prisma.product.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!product) {
     notFound();
   }
+
 
   // Obtener productos relacionados de la misma categoría
   const relatedProducts = await prisma.product.findMany({
@@ -38,8 +51,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
   });
 
   const discountPercent = product.onSale ? 10 : 0; // Asumimos un 10% de descuento
-  const originalPrice = product.onSale 
-    ? (product.price / (1 - discountPercent/100)).toFixed(2) 
+  const originalPrice = product.onSale
+    ? (product.price / (1 - discountPercent / 100)).toFixed(2)
     : product.price.toFixed(2);
 
   return (
@@ -54,32 +67,32 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <span className="mx-2">&gt;</span>
         <span className="text-gray-800">{product.title}</span>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Columna izquierda: Imágenes */}
         <div>
           <ProductImageGallery imageUrl={product.imageUrl} title={product.title} />
         </div>
-        
+
         {/* Columna derecha: Información del producto */}
         <div>
           <div className="mb-2 text-gray-500">{product.brand}</div>
           <h1 className="text-2xl font-medium mb-2">{product.title}</h1>
-          
+
           <div className="flex items-center mb-4">
             <StarRating rating={product.ranking} />
             <span className="text-sm text-gray-500 ml-2">
               ({product.ranking.toFixed(1)})
             </span>
           </div>
-          
+
           {/* Precio */}
-          <PriceDisplay 
-            price={product.price} 
-            originalPrice={parseFloat(originalPrice)} 
-            onSale={product.onSale} 
+          <PriceDisplay
+            price={product.price}
+            originalPrice={parseFloat(originalPrice)}
+            onSale={product.onSale}
           />
-          
+
           {/* Vendedor */}
           <div className="flex items-center mb-4">
             <span className="text-sm text-gray-600">Vendido por </span>
@@ -87,7 +100,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
               {product.seller}
             </a>
           </div>
-          
+
           {/* Entrega */}
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
             <div className="flex items-center mb-2">
@@ -103,7 +116,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
               <span>Envío a domicilio</span>
             </div>
           </div>
-          
+
           {/* Botones */}
           <div className="grid grid-cols-1 gap-3">
             <AddToCartButton product={product} />
@@ -113,7 +126,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </div>
         </div>
       </div>
-      
+
       {/* Descripción */}
       <div className="mt-12">
         <h2 className="text-xl font-medium mb-4">Descripción</h2>
@@ -121,7 +134,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           <p className="text-gray-700 whitespace-pre-line">{product.description}</p>
         </div>
       </div>
-      
+
       {/* Especificaciones */}
       <div className="mt-12">
         <h2 className="text-xl font-medium mb-4">Especificaciones</h2>
@@ -148,7 +161,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </table>
         </div>
       </div>
-      
+
       {/* Productos relacionados */}
       {relatedProducts.length > 0 && (
         <RelatedProducts products={relatedProducts} />

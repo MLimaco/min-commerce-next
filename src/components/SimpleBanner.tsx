@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Banners
 const banners = [
@@ -17,7 +18,7 @@ const banners = [
     link: "/categoria/celulares"
   },
   {
-    id: 3, 
+    id: 3,
     url: "https://simple.ripley.com.pe/home/_next/image?url=https%3A%2F%2Fapi-pe.ripley.com%2Fexperience%2Fecommerce%2Frdex%2Fapi-image-interceptor%2Fv1%2Fimages%2FaEhR97h8WN-LV8Ta_pe-desk-sl6-bth-computo-100625.webp&w=1920&q=100",
     alt: "Promoción cómputo",
     link: "/categoria/computacion"
@@ -26,7 +27,7 @@ const banners = [
 
 export default function SimpleBanner() {
   const [active, setActive] = useState(0);
-  
+
   // Rotar banners automáticamente
   useEffect(() => {
     const timer = setInterval(() => {
@@ -36,45 +37,46 @@ export default function SimpleBanner() {
   }, []);
 
   return (
-    <div className="w-full" style={{marginTop: '1px'}}>
+    <div className="w-full" style={{ marginTop: '1px' }}>
       <div className="relative">
         {/* Banners - usando tag img estándar en lugar de Image de Next.js */}
         {banners.map((banner, index) => (
-          <div 
-            key={banner.id} 
-            className={`transition-opacity duration-500 ${
-              index === active ? 'opacity-100 block' : 'opacity-0 hidden'
-            }`}
+          <div
+            key={banner.id}
+            className={`transition-opacity duration-500 ${index === active ? 'opacity-100 block' : 'opacity-0 hidden'
+              }`}
           >
             <Link href={banner.link}>
-              <img 
+              <Image
                 src={banner.url}
                 alt={banner.alt}
+                width={1920}
+                height={500}
                 className="w-full h-auto"
               />
             </Link>
           </div>
         ))}
-        
+
         {/* Controles */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
           {banners.map((_, i) => (
-            <button 
+            <button
               key={i}
               className={`w-3 h-3 rounded-full ${i === active ? 'bg-white' : 'bg-white/50'}`}
               onClick={() => setActive(i)}
             />
           ))}
         </div>
-        
+
         {/* Flechas */}
-        <button 
+        <button
           className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center text-white"
           onClick={() => setActive(prev => (prev === 0 ? banners.length - 1 : prev - 1))}
         >
           &lt;
         </button>
-        <button 
+        <button
           className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center text-white"
           onClick={() => setActive(prev => (prev + 1) % banners.length)}
         >

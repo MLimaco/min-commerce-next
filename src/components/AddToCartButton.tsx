@@ -6,7 +6,7 @@ import { Product } from '@/services/productService';
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const { addToCart } = useContext(CartContext);
-  
+
   const handleAddToCart = () => {
     const cartItem = {
       id: product.id,
@@ -15,14 +15,19 @@ export default function AddToCartButton({ product }: { product: Product }) {
       imageUrl: product.imageUrl,
       category: product.category,
       onSale: product.onSale,
-      quantity: 1
+      quantity: 1,
+      // Añadir valores predeterminados
+      description: product.description || '',
+      ranking: product.ranking || 0,
+      deliveryTime: product.deliveryTime || '',
+      brand: product.brand || '',
+      seller: product.seller || ''
     };
-    
     addToCart(cartItem);
   };
-  
+
   return (
-    <button 
+    <button
       onClick={handleAddToCart}
       className="btn-primary flex items-center justify-center cursor-pointer"
     >
