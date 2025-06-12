@@ -1,4 +1,3 @@
-// @ts-nocheck - Desactiva completamente la verificación de tipos en este archivo
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 
