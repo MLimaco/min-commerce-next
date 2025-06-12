@@ -8,6 +8,7 @@ import prisma from '@/lib/prisma';
 // @ts-expect-error - Next.js 15.3.3 type incompatibility
 export async function GET(
   request: NextRequest,
+  // @ts-expect-error - Next.js 15.3.3 type incompatibility
   { params }: { params: { id: string } }
 ) {
   try {
