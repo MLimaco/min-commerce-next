@@ -1,4 +1,4 @@
-export async function GET(request: Request) {
+export async function GET() {
   try {
     // Simulate fetching cart data from a database or external API
     const cart = [

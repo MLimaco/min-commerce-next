@@ -24,7 +24,7 @@ async function SearchResults({ query }: { query: string }) {
       <div className="text-center py-16">
         <h2 className="text-2xl font-medium mb-4">No se encontraron resultados</h2>
         <p className="text-gray-600 mb-8">
-          No pudimos encontrar productos que coincidan con "{query}"
+          No pudimos encontrar productos que coincidan con &quot;{query}&quot;
         </p>
         <Link href="/" className="inline-block bg-purple-700 text-white px-6 py-3 rounded-md hover:bg-purple-800">
           Volver al inicio

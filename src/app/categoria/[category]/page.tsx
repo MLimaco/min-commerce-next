@@ -99,7 +99,7 @@ export default async function CategoryPage({
   };
   
   // Construir filtros de consulta basados en searchParams, adaptados a tu esquema
-  const queryFilters: any = {
+  const queryFilters: Record<string, unknown> = {
     category: category.toLowerCase(),
   };
   

@@ -63,7 +63,12 @@ export default function CategoryFilters({
   filterData, 
   categorySlug 
 }: { 
-  filterData: any;
+  filterData: {
+    estado?: FilterOption[];
+    envio?: FilterOption[];
+    marca?: FilterOption[];
+    vendedor?: FilterOption[];
+  };
   categorySlug: string;
 }) {
   const router = useRouter();
@@ -118,7 +123,7 @@ export default function CategoryFilters({
 
   // Actualizar la URL con los filtros seleccionados
   const updateUrl = (filters: Record<string, string[]>) => {
-    const params = new URLSearchParams(searchParams as any);
+    const params = new URLSearchParams(searchParams.toString());
     
     // Primero eliminar todos los parámetros existentes de filtros
     ['estado', 'envio', 'marca', 'vendedor'].forEach(name => {
