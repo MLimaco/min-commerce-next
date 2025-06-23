@@ -1,4 +1,5 @@
 import './globals.css';
+import { AuthProvider } from "@/components/Providers";
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
@@ -11,21 +12,19 @@ export const metadata: Metadata = {
   description: 'Tu tienda online de confianza',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body className={inter.className}>
-        <CartProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-          {/* Aquí podrías añadir un Footer */}
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Header />
+            <main>
+              {children}
+            </main>
+            {/* Aquí podrías añadir un Footer */}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
