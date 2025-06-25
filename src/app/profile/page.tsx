@@ -1,14 +1,15 @@
-import { auth } from "@/auth"
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function ProfilePage() {
-    const session = await auth()
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return (
-      <main className="flex items-center justify-center">
+      <main className="flex items-center justify-center h-[80vh]">
         <p className="text-xl">No autorizado</p>
       </main>
-    )
+    );
   }
 
   return (
@@ -16,5 +17,5 @@ export default async function ProfilePage() {
       <h2 className="text-xl">Perfil del Usuario</h2>
       <p className="font-bold">{session.user?.name} / {session.user?.email}</p>
     </main>
-  )
+  );
 }
