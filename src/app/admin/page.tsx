@@ -1,12 +1,10 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
-  // Usar getServerSession en lugar de auth()
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
-    console.log("Sesión actual:", JSON.stringify(session, null, 2)); // Añadir para depuración
+  console.log("Sesión actual:", session); // Depuración
 
   // Verificar si el usuario está autenticado
   if (!session) {
