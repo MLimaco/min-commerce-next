@@ -28,3 +28,49 @@ model Product {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+
+// Tablas para autenticación NextAuth.js (Parte 1)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("user") // Para tu sistema de roles
+  accounts      Account[]
+  sessionLogs   SessionLog[] // Nueva relación para logs (Parte 2)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// Modelo SessionLog para registrar login/logout (Parte 2)
+model SessionLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // 'login' o 'logout'
+  provider  String?
+  timestamp DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("session_logs")
+}
