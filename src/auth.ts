@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -24,7 +23,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       console.log("Callback Session ejecutado");
       if (session.user) {
-        session.user.role = token.role;
+        session.user.role = token.role as "admin" | "user";
         console.log("Sesión generada:", session); // Depuración
       }
       return session;
@@ -34,6 +33,4 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
-
-export default NextAuth(authOptions);
+});

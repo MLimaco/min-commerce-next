@@ -1,23 +1,19 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import authConfig from "./auth.config"; // Importar configuración común
+import NextAuth from "next-auth";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  // Obtener el token JWT que NextAuth guarda en una cookie
-  const token = await getToken({ 
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET
-  });
-  
-  const { pathname } = request.nextUrl;
-  
-  if (pathname.startsWith("/admin")) {
-    if (!token || token.role !== "admin") {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+// Inicializar Auth.js con la configuración común
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  const session = await auth(req); // Usar auth() para obtener la sesión
+
+  if (!session || session?.user?.role !== "admin") {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/admin/:path*"],

@@ -1,30 +1,33 @@
 import './globals.css';
-import { AuthProvider } from "@/components/Providers";
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import { CartProvider } from '@/context/cartContext';
-
-const inter = Inter({ subsets: ['latin'] });
+import Providers from '@/components/Providers';
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: 'Min-Commerce',
   description: 'Tu tienda online de confianza',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider>
+      <body className="font-inter">
+        <Providers>
           <CartProvider>
-            <Header />
+            <Header session={session} />
             <main>
               {children}
             </main>
-            {/* Aquí podrías añadir un Footer */}
           </CartProvider>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
