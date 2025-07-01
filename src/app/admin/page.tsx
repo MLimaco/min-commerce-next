@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from 'next/link';
 
 export default async function AdminPage() {
   const session = await auth();
@@ -28,7 +29,7 @@ export default async function AdminPage() {
   return (
     <main className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Panel de Administración</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Productos</h2>
@@ -37,7 +38,7 @@ export default async function AdminPage() {
             Administrar productos
           </button>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Usuarios</h2>
           <p className="text-gray-600 mb-4">Gestiona los usuarios registrados</p>
@@ -45,16 +46,19 @@ export default async function AdminPage() {
             Administrar usuarios
           </button>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Estadísticas</h2>
-          <p className="text-gray-600 mb-4">Visualiza las estadísticas de ventas</p>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Ver estadísticas
-          </button>
+          <h2 className="text-xl font-semibold mb-4">Logs de Sesión</h2>
+          <p className="text-gray-600 mb-4">Visualiza los logs de login y logout de usuarios</p>
+          <Link
+            href="/admin/logs"
+            className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          >
+            Ver logs de sesión
+          </Link>
         </div>
       </div>
-      
+
       <div className="mt-6">
         <p className="text-gray-500">
           Conectado como: <span className="font-semibold">{session.user?.name}</span> (Administrador)
